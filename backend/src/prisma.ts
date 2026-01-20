@@ -1,5 +1,4 @@
-import dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
 
 import { PrismaClient } from "@prisma/client";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
@@ -9,19 +8,23 @@ declare global {
     var __prisma: PrismaClient | undefined;
 }
 
-function maskDbUrl(url: string) {
-    return url.replace(/:\/\/(.*?):(.*?)@/, "://$1:***@");
-}
+const host = process.env.DB_HOST ?? "127.0.0.1";
+const port = Number(process.env.DB_PORT ?? "3309");
+const user = process.env.DB_USER ?? "it_user";
+const password = process.env.DB_PASSWORD ?? "strongpassword";
+const database = process.env.DB_NAME ?? "it_service";
+const connectionLimit = Number(process.env.DB_CONNECTION_LIMIT ?? "5");
 
-const url = process.env.DATABASE_URL || "";
-if (!url) {
-    console.error("❌ DATABASE_URL is empty. Check backend/.env");
-} else {
-    console.log("✅ DATABASE_URL loaded:", maskDbUrl(url));
-}
+console.log(`✅ DB runtime config: ${user}@${host}:${port}/${database} (limit=${connectionLimit})`);
 
-// Prisma v7 requires adapter or accelerateUrl. :contentReference[oaicite:4]{index=4}
-const adapter = new PrismaMariaDb(url);
+const adapter = new PrismaMariaDb({
+    host,
+    port,
+    user,
+    password,
+    database,
+    connectionLimit,
+});
 
 export const prisma =
     global.__prisma ??

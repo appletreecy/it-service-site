@@ -62,18 +62,18 @@ jobs:
             cd "${{ secrets.LINODE_APP_DIR }}"
 
             # pull latest images
-            sudo docker compose -f docker-compose.prod.yml pull
+            sudo docker compose --env-file ./db.env -f docker-compose.prod.yml pull
 
             # bring db up first
-            sudo docker compose -f docker-compose.prod.yml up -d db
+            sudo docker compose --env-file ./db.env -f docker-compose.prod.yml up -d db
 
             # bring backend up so we can run prisma migration inside it
-            sudo docker compose -f docker-compose.prod.yml up -d backend
+            sudo docker compose --env-file ./db.env -f docker-compose.prod.yml up -d backend
 
             # run prisma migrations (no TTY)
-            sudo docker compose -f docker-compose.prod.yml exec -T backend npx prisma migrate deploy
+            sudo docker compose --env-file ./db.env -f docker-compose.prod.yml exec -T backend npx prisma migrate deploy
 
             # bring everything else up
-            sudo docker compose -f docker-compose.prod.yml up -d --remove-orphans
+            sudo docker compose --env-file ./db.env -f docker-compose.prod.yml up -d --remove-orphans
 
             sudo docker image prune -f

@@ -32,6 +32,7 @@ COPY --from=build /app/dist ./dist
 
 # (Optional but nice) keep prisma schema in image for debugging/migrate commands
 COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 
 EXPOSE 4000
 CMD ["node", "dist/server.js"]

@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import type { FormEvent } from "react";
 
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL as string;
+// In production, use same-origin (/api/...) to avoid PNA + CORS issues.
+// In dev, you can set VITE_API_BASE_URL="http://localhost:4000" (or leave empty if you proxy in Vite).
+const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || "";
 
 type ContactForm = {
     name: string;

@@ -18,10 +18,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Lowercase repo
+      - name: Lowercase repo (owner/repo)
         id: vars
-        run: |
-          echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
+        run: echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
 
       - name: Login to GHCR
         uses: docker/login-action@v3
@@ -61,7 +60,20 @@ jobs:
           script: |
             set -e
             cd "${{ secrets.LINODE_APP_DIR }}"
-            sudo docker compose -f docker-compose.prod.yml pull
-            sudo docker compose -f docker-compose.prod.yml up -d
-            sudo docker image prune -f
 
+            # pull latest images
+            sudo docker compose -f docker-compose.prod.yml pull
+
+            # bring db up first
+            sudo docker compose -f docker-compose.prod.yml up -d db
+
+            # bring backend up so we can run prisma migration inside it
+            sudo docker compose -f docker-compose.prod.yml up -d backend
+
+            # run prisma migrations (no TTY)
+            sudo docker compose -f docker-compose.prod.yml exec -T backend npx prisma migrate deploy
+
+            # bring everything else up
+            sudo docker compose -f docker-compose.prod.yml up -d --remove-orphans
+
+            sudo docker image prune -f

@@ -1,7 +1,7 @@
 import { NavLink, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
-import Contact from "./pages/Contact";
+import Contact from "@/pages/Contact";
 
 import { Button } from "./components/ui/button";
 

@@ -119,7 +119,8 @@ export default function Contact() {
                                 onChange={onChange}
                                 required
                                 minLength={10}
-                                rows={6}
+                                rows={12}
+                                className="min-h-[240px]"
                                 placeholder="What’s broken? What have you tried? Timeline?"
                             />
                         </Field>

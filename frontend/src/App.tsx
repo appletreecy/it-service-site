@@ -3,33 +3,53 @@ import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 
-function Nav() {
-    const linkBase =
-        "inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition " +
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2";
+import { Button } from "./components/ui/button";
 
-    const cls = ({ isActive }: { isActive: boolean }) =>
-        isActive
-            ? `${linkBase} bg-blue-600 text-white hover:bg-blue-700`
-            : `${linkBase} border border-slate-300 bg-white text-slate-900 hover:bg-slate-50`;
+function Nav() {
+    const baseLink =
+        "rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
     return (
-        <header className="border-b bg-white">
+        <header className="border-b bg-background">
             <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-                <div className="font-bold tracking-tight text-slate-900">
+                <div className="font-bold tracking-tight text-foreground">
                     IT Service Studio
                 </div>
 
                 <nav className="flex gap-2">
-                    <NavLink to="/" className={cls} end>
-                        Home
-                    </NavLink>
-                    <NavLink to="/services" className={cls}>
-                        Services
-                    </NavLink>
-                    <NavLink to="/contact" className={cls}>
-                        Contact
-                    </NavLink>
+                    <Button asChild variant="outline" size="sm">
+                        <NavLink
+                            to="/"
+                            end
+                            className={({ isActive }) =>
+                                `${baseLink} ${isActive ? "pointer-events-none opacity-100" : ""}`
+                            }
+                        >
+                            Home
+                        </NavLink>
+                    </Button>
+
+                    <Button asChild variant="outline" size="sm">
+                        <NavLink
+                            to="/services"
+                            className={({ isActive }) =>
+                                `${baseLink} ${isActive ? "pointer-events-none opacity-100" : ""}`
+                            }
+                        >
+                            Services
+                        </NavLink>
+                    </Button>
+
+                    <Button asChild variant="outline" size="sm">
+                        <NavLink
+                            to="/contact"
+                            className={({ isActive }) =>
+                                `${baseLink} ${isActive ? "pointer-events-none opacity-100" : ""}`
+                            }
+                        >
+                            Contact
+                        </NavLink>
+                    </Button>
                 </nav>
             </div>
         </header>
@@ -38,7 +58,7 @@ function Nav() {
 
 export default function App() {
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-900">
+        <div className="min-h-screen bg-muted/30 text-foreground">
             <Nav />
 
             <main className="mx-auto max-w-5xl px-4 py-10">
@@ -49,8 +69,8 @@ export default function App() {
                 </Routes>
             </main>
 
-            <footer className="border-t bg-white">
-                <div className="mx-auto max-w-5xl px-4 py-5 text-xs text-slate-500">
+            <footer className="border-t bg-background">
+                <div className="mx-auto max-w-5xl px-4 py-5 text-xs text-muted-foreground">
                     © {new Date().getFullYear()} IT Service Studio · Splunk / Observability
                     / Logging Support
                 </div>

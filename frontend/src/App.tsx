@@ -4,17 +4,32 @@ import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 
 function Nav() {
+    const linkBase =
+        "inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition " +
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2";
+
     const cls = ({ isActive }: { isActive: boolean }) =>
-        `btn ${isActive ? "btn-primary" : "btn-outline"}`;
+        isActive
+            ? `${linkBase} bg-blue-600 text-white hover:bg-blue-700`
+            : `${linkBase} border border-slate-300 bg-white text-slate-900 hover:bg-slate-50`;
 
     return (
-        <header className="border-b">
-            <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 16px" }}>
-                <div style={{ fontWeight: 700 }}>IT Service Studio</div>
-                <nav style={{ display: "flex", gap: 8 }}>
-                    <NavLink to="/" className={cls} end>Home</NavLink>
-                    <NavLink to="/services" className={cls}>Services</NavLink>
-                    <NavLink to="/contact" className={cls}>Contact</NavLink>
+        <header className="border-b bg-white">
+            <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+                <div className="font-bold tracking-tight text-slate-900">
+                    IT Service Studio
+                </div>
+
+                <nav className="flex gap-2">
+                    <NavLink to="/" className={cls} end>
+                        Home
+                    </NavLink>
+                    <NavLink to="/services" className={cls}>
+                        Services
+                    </NavLink>
+                    <NavLink to="/contact" className={cls}>
+                        Contact
+                    </NavLink>
                 </nav>
             </div>
         </header>
@@ -23,9 +38,10 @@ function Nav() {
 
 export default function App() {
     return (
-        <div style={{ minHeight: "100vh" }}>
+        <div className="min-h-screen bg-slate-50 text-slate-900">
             <Nav />
-            <main className="container" style={{ padding: "40px 16px" }}>
+
+            <main className="mx-auto max-w-5xl px-4 py-10">
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/services" element={<Services />} />
@@ -33,9 +49,10 @@ export default function App() {
                 </Routes>
             </main>
 
-            <footer className="border-t">
-                <div className="container muted" style={{ padding: "20px 16px", fontSize: 13 }}>
-                    © {new Date().getFullYear()} IT Service Studio · Splunk / Observability / Logging Support
+            <footer className="border-t bg-white">
+                <div className="mx-auto max-w-5xl px-4 py-5 text-xs text-slate-500">
+                    © {new Date().getFullYear()} IT Service Studio · Splunk / Observability
+                    / Logging Support
                 </div>
             </footer>
         </div>

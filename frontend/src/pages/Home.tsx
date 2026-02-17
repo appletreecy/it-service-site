@@ -16,6 +16,50 @@ export default function Home() {
             title: "Logging Pipeline",
             desc: "Syslog-ng, agents, routing, retention, performance.",
         },
+        {
+            title: "Splunk Architecture & Deployment",
+            desc: "Design and implement standalone, clustered, or Splunk Cloud environments.",
+        },
+        {
+            title: "Security & Splunk ES Implementation",
+            desc: "Enterprise Security setup, correlation searches, risk-based alerting, SOC optimization.",
+        },
+        {
+            title: "Performance & Cost Optimization",
+            desc: "Indexer tuning, search optimization, storage planning, license usage reduction.",
+        },
+    ];
+
+    const cards_network =[
+        // NEW NETWORKING SERVICES
+        {
+            title: "Network Design & Implementation",
+            desc: "LAN, WAN, VLAN, routing, firewall configuration, secure topology design.",
+        },
+        {
+            title: "Network Monitoring & Visibility",
+            desc: "SNMP, NetFlow, Syslog integration with Splunk for full network observability.",
+        },
+        {
+            title: "Network Security Hardening",
+            desc: "Firewall policies, VPN setup, segmentation, zero-trust architecture.",
+        },
+    ];
+
+    const cards_linux =[
+        // NEW NETWORKING SERVICES
+        {
+            title: "Network Design & Implementation",
+            desc: "LAN, WAN, VLAN, routing, firewall configuration, secure topology design.",
+        },
+        {
+            title: "Network Monitoring & Visibility",
+            desc: "SNMP, NetFlow, Syslog integration with Splunk for full network observability.",
+        },
+        {
+            title: "Network Security Hardening",
+            desc: "Firewall policies, VPN setup, segmentation, zero-trust architecture.",
+        },
     ];
 
     return (
@@ -42,6 +86,10 @@ export default function Home() {
                 </div>
             </section>
 
+            <section>
+                <h2 className="text-2xl font-bold tracking-tight sm:text-2xl">Splunk:</h2>
+            </section>
+
             <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {cards.map((c) => (
                     <Card key={c.title} className="shadow-sm">
@@ -54,6 +102,41 @@ export default function Home() {
                     </Card>
                 ))}
             </section>
+
+            <section>
+                <h2 className="text-2xl font-bold tracking-tight sm:text-2xl">Networking:</h2>
+            </section>
+
+            <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {cards_network.map((c) => (
+                    <Card key={c.title} className="shadow-sm">
+                        <CardHeader>
+                            <CardTitle className="text-base">{c.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="text-sm leading-6 text-muted-foreground">
+                            {c.desc}
+                        </CardContent>
+                    </Card>
+                ))}
+            </section>
+
+            <section>
+                <h2 className="text-2xl font-bold tracking-tight sm:text-2xl">Linux:</h2>
+            </section>
+
+            <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {cards_linux.map((c) => (
+                    <Card key={c.title} className="shadow-sm">
+                        <CardHeader>
+                            <CardTitle className="text-base">{c.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="text-sm leading-6 text-muted-foreground">
+                            {c.desc}
+                        </CardContent>
+                    </Card>
+                ))}
+            </section>
+
         </div>
     );
 }

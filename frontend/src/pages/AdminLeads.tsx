@@ -13,6 +13,8 @@ type Lead = {
   createdAt: string;
 };
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || "";
+
 export default function AdminLeads() {
   const [authed, setAuthed] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -29,7 +31,7 @@ export default function AdminLeads() {
     let canceled = false;
     const run = async () => {
       try {
-        const r = await fetch("/api/admin/me", { credentials: "include", cache: "no-store" });
+        const r = await fetch(`${API_BASE}/api/admin/me`, { credentials: "include", cache: "no-store" });
         if (canceled) return;
         setAuthed(r.ok);
       } catch {
@@ -53,7 +55,7 @@ export default function AdminLeads() {
           setTotal(0);
           return;
         }
-        const r = await fetch(`/api/leads?page=${page}&pageSize=${pageSize}`, {
+        const r = await fetch(`${API_BASE}/api/leads?page=${page}&pageSize=${pageSize}`, {
           cache: "no-store",
           credentials: "include",
         });
@@ -83,7 +85,7 @@ export default function AdminLeads() {
     e.preventDefault();
     setLoginError(null);
     try {
-      const r = await fetch("/api/admin/login", {
+      const r = await fetch(`${API_BASE}/api/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -100,7 +102,7 @@ export default function AdminLeads() {
   };
 
   const onLogout = async () => {
-    await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
+    await fetch(`${API_BASE}/api/admin/logout`, { method: "POST", credentials: "include" });
     setAuthed(false);
     setItems([]);
     setTotal(0);

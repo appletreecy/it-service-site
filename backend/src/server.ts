@@ -11,7 +11,12 @@ const app = express();
 
 const PORT = Number(process.env.PORT || 4000);
 const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
+const DEFAULT_ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin";
+const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "password";
+const FORCE_ADMIN_RESET = process.env.ADMIN_FORCE_RESET === "true";
+const IS_PROD = process.env.NODE_ENV === "production";
 
+app.set("trust proxy", 1);
 app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
@@ -20,13 +25,21 @@ const SESS_COOKIE = "admin_session";
 const sessions = new Map<string, { userId: string; username: string; createdAt: number }>();
 
 async function ensureDefaultAdmin() {
-    const username = "admin";
-    const password = "password";
+    const username = DEFAULT_ADMIN_USERNAME;
+    const password = DEFAULT_ADMIN_PASSWORD;
     const existing = await prisma.adminUser.findUnique({ where: { username } }).catch(() => null);
     if (!existing) {
         const hash = await bcrypt.hash(password, 10);
         await prisma.adminUser.create({
             data: { username, passwordHash: hash },
+        });
+        return;
+    }
+    if (FORCE_ADMIN_RESET) {
+        const hash = await bcrypt.hash(password, 10);
+        await prisma.adminUser.update({
+            where: { username },
+            data: { passwordHash: hash },
         });
     }
 }
@@ -64,8 +77,17 @@ const LoginSchema = z.object({
 app.post("/api/admin/login", async (req: Request, res: Response) => {
     try {
         const { username, password } = LoginSchema.parse(req.body);
-        const user = await prisma.adminUser.findUnique({ where: { username } });
-        if (!user) return res.status(401).json({ ok: false, error: "Invalid credentials" });
+        let user = await prisma.adminUser.findUnique({ where: { username } });
+        if (!user) {
+            if (username === DEFAULT_ADMIN_USERNAME && password === DEFAULT_ADMIN_PASSWORD) {
+                const hash = await bcrypt.hash(password, 10);
+                user = await prisma.adminUser.create({
+                    data: { username, passwordHash: hash },
+                });
+            } else {
+                return res.status(401).json({ ok: false, error: "Invalid credentials" });
+            }
+        }
         const ok = await bcrypt.compare(password, user.passwordHash);
         if (!ok) return res.status(401).json({ ok: false, error: "Invalid credentials" });
         const token = crypto.randomBytes(32).toString("hex");
@@ -73,7 +95,7 @@ app.post("/api/admin/login", async (req: Request, res: Response) => {
         res.cookie(SESS_COOKIE, token, {
             httpOnly: true,
             sameSite: "lax",
-            secure: false,
+            secure: IS_PROD,
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
         return res.json({ ok: true, username: user.username });
@@ -95,7 +117,7 @@ app.get("/api/admin/me", async (req: Request, res: Response) => {
 app.post("/api/admin/logout", async (req: Request, res: Response) => {
     const token = req.cookies?.[SESS_COOKIE];
     if (token) sessions.delete(token);
-    res.clearCookie(SESS_COOKIE, { httpOnly: true, sameSite: "lax", secure: false });
+    res.clearCookie(SESS_COOKIE, { httpOnly: true, sameSite: "lax", secure: IS_PROD });
     res.json({ ok: true });
 });
 

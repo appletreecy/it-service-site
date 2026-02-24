@@ -2,6 +2,7 @@ import { NavLink, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Contact from "@/pages/Contact";
+import AdminLeads from "@/pages/AdminLeads";
 
 import { Button } from "./components/ui/button";
 
@@ -16,7 +17,7 @@ function Nav() {
                     IT Service Studio
                 </div>
 
-                <nav className="flex gap-2">
+                <nav className="flex items-center gap-3">
                     <Button asChild variant="outline" size="sm">
                         <NavLink
                             to="/"
@@ -50,6 +51,17 @@ function Nav() {
                             Contact
                         </NavLink>
                     </Button>
+
+                    <Button asChild variant="outline" size="sm">
+                        <NavLink
+                            to="/admin/leads"
+                            className={({ isActive }) =>
+                                `${baseLink} ${isActive ? "pointer-events-none opacity-100" : ""}`
+                            }
+                        >
+                            Admin
+                        </NavLink>
+                    </Button>
                 </nav>
             </div>
         </header>
@@ -66,6 +78,7 @@ export default function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/services" element={<Services />} />
                     <Route path="/contact" element={<Contact />} />
+                    <Route path="/admin/leads" element={<AdminLeads />} />
                 </Routes>
             </main>
 

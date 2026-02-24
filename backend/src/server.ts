@@ -55,6 +55,35 @@ app.post("/api/contact", async (req: Request, res: Response) => {
     }
 });
 
+app.get("/api/leads", async (req: Request, res: Response) => {
+    try {
+        const page = Math.max(1, Number(req.query.page || "1"));
+        const pageSize = Math.min(100, Math.max(1, Number(req.query.pageSize || "20")));
+        const skip = (page - 1) * pageSize;
+        const [items, total] = await Promise.all([
+            prisma.lead.findMany({
+                skip,
+                take: pageSize,
+                orderBy: { createdAt: "desc" },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    company: true,
+                    message: true,
+                    source: true,
+                    createdAt: true,
+                },
+            }),
+            prisma.lead.count(),
+        ]);
+        res.json({ ok: true, items, total, page, pageSize });
+    } catch (err) {
+        console.error("GET /api/leads error:", err);
+        res.status(500).json({ ok: false, error: "Server error" });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Backend listening on http://localhost:${PORT}`);
 });

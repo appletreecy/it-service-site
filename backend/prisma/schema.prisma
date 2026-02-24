@@ -19,3 +19,10 @@ model Lead {
   @@index([email])
   @@index([createdAt])
 }
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}

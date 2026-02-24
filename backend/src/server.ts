@@ -27,17 +27,17 @@ const sessions = new Map<string, { userId: string; username: string; createdAt: 
 async function ensureDefaultAdmin() {
     const username = DEFAULT_ADMIN_USERNAME;
     const password = DEFAULT_ADMIN_PASSWORD;
-    const existing = await prisma.adminUser.findUnique({ where: { username } }).catch(() => null);
+    const existing = await (prisma as any).adminUser.findUnique({ where: { username } }).catch(() => null);
     if (!existing) {
         const hash = await bcrypt.hash(password, 10);
-        await prisma.adminUser.create({
+        await (prisma as any).adminUser.create({
             data: { username, passwordHash: hash },
         });
         return;
     }
     if (FORCE_ADMIN_RESET) {
         const hash = await bcrypt.hash(password, 10);
-        await prisma.adminUser.update({
+        await (prisma as any).adminUser.update({
             where: { username },
             data: { passwordHash: hash },
         });
@@ -77,11 +77,11 @@ const LoginSchema = z.object({
 app.post("/api/admin/login", async (req: Request, res: Response) => {
     try {
         const { username, password } = LoginSchema.parse(req.body);
-        let user = await prisma.adminUser.findUnique({ where: { username } });
+        let user = await (prisma as any).adminUser.findUnique({ where: { username } });
         if (!user) {
             if (username === DEFAULT_ADMIN_USERNAME && password === DEFAULT_ADMIN_PASSWORD) {
                 const hash = await bcrypt.hash(password, 10);
-                user = await prisma.adminUser.create({
+                user = await (prisma as any).adminUser.create({
                     data: { username, passwordHash: hash },
                 });
             } else {

@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 
 export default function Home() {
@@ -75,15 +73,7 @@ export default function Home() {
                     logging pipeline issues.
                 </p>
 
-                <div className="flex flex-wrap gap-3">
-                    <Button asChild>
-                        <Link to="/contact">Book a help request</Link>
-                    </Button>
-
-                    <Button asChild variant="outline">
-                        <Link to="/services">See services</Link>
-                    </Button>
-                </div>
+                
             </section>
 
             <section>
